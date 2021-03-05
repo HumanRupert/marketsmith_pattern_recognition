@@ -1,5 +1,5 @@
 import json
-from typing import Literal
+from typing import Literal, List
 
 from pydantic import validate_arguments
 
@@ -25,3 +25,12 @@ def get_patterns(instrument: Instrument, user: User, session: AuthSession, start
     res = session.session.post(GET_PATTERNS, data=json.dumps(payload))
     res = res.json()
     return res
+
+
+def filter_cup_with_handles(patterns) -> List[CupWithHandle]:
+    cups: List[CupWithHandle] = patterns.get("cupWithHandles", None)
+    if(cups == None):
+        return
+
+    cup_with_handles = [cup for cup in cups if cup["patternType"] == 1]
+    return cup_with_handles
