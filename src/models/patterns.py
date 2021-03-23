@@ -8,12 +8,6 @@ PatternType = Literal["consolidations",
                       "cupWithHandles", "doubleBottoms", "flatBases", "ascendingBases", "IPOs", "tightAreas"]
 
 
-class PatternProperties(BaseModel):
-    """Properties of a pattern (will be available in `properties` field of pattern object)"""
-    Key: str
-    Value: str
-
-
 class CupWithHandle(BaseModel):
     """Represents a cup with handle pattern object passed by MarketSmith API"""
     baseID: int
@@ -23,7 +17,6 @@ class CupWithHandle(BaseModel):
     baseStage: str
     baseStatus: int
     pivotPriceDate: date
-    properties: List[PatternProperties]
     baseLength: int
     periodicity: int
     versionID: str
@@ -34,6 +27,21 @@ class CupWithHandle(BaseModel):
     handleLowDate: date
     handleStartDate: date
     cupEndDate: date
+    UpBars: int
+    BlueBars: int
+    StallBars: int
+    UpVolumeTotal: int
+    DownBars: int
+    RedBars: int
+    SupportBars: int
+    DownVolumeTotal: int
+    BaseDepth: float
+    AvgVolumeRatePctOnPivot: float
+    VolumePctChangeOnPivot: float
+    PricePctChangeOnPivot: float
+    HandleDepth: float
+    HandleLength: int
+    CupLength: int
 
     @validator("baseStartDate", "baseEndDate", "pivotPriceDate", "leftSideHighDate", "baseBottomDate", "firstBottomDate", "handleLowDate", "handleStartDate", "cupEndDate", pre=True, always=True)
     def validate_date(cls, v):

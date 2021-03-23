@@ -1,7 +1,7 @@
 import json
 from typing import Literal, List
 
-from pydantic import validate_arguments
+from pydantic import validate_arguments, BaseModel
 
 from src.ms import AuthSession, get_instrument, get_user
 from src.models import Instrument, User, PatternType, CupWithHandle
@@ -51,6 +51,29 @@ def get_patterns(instrument: Instrument, user: User, session: AuthSession, start
     return res
 
 
+def flattern_pattern_properties(patterns: List[dict]) -> List[dict]:
+    """Each received Pattern instance from MS includes a `properties` field, which is a list of dictionaries w/ the `Key` and `Value` fields and containts extra properties of the pattern. This method flattens Pattern instance by adding removing `properties` field and adding its keys as separate fields of instance.
+
+    Parameters
+    ----------
+    patterns : List[dict]
+        list of patterns fetched from MS
+
+    Returns
+    -------
+    List[dict]
+        flattened patterns
+    """
+    # add properties field as separate keys
+    pattern_properties = [pattern.pop("properties", None)
+                          for pattern in patterns]
+    for index, props in enumerate(pattern_properties):
+        for prop in props:
+            patterns[index][prop["Key"]] = prop["Value"]
+
+    return patterns
+
+
 def filter_cup_with_handles(patterns) -> List[CupWithHandle]:
     """Given the response object of `GET_PATTERNS` endpoint, filters cup with handle patterns from it
 
@@ -70,7 +93,10 @@ def filter_cup_with_handles(patterns) -> List[CupWithHandle]:
         return
 
     # cups w/ handle
-    cup_with_handles = [CupWithHandle(**cup)
+    cup_with_handles = [cup
                         for cup in cups
                         if cup["patternType"] == 1]
+    cup_with_handles = flattern_pattern_properties(cup_with_handles)
+    cup_with_handles = [CupWithHandle(**cup) for cup in cup_with_handles]
+
     return cup_with_handles
