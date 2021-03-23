@@ -1,5 +1,7 @@
 import json
 from typing import Literal, List
+import csv
+import time
 
 from pydantic import validate_arguments, BaseModel
 
@@ -100,3 +102,31 @@ def filter_cup_with_handles(patterns) -> List[CupWithHandle]:
     cup_with_handles = [CupWithHandle(**cup) for cup in cup_with_handles]
 
     return cup_with_handles
+
+
+def store_patterns(patterns: List[BaseModel], dataname: str, ticker: str):
+    """Stores a given list of patterns to a `.csv` file in `data/` dir
+
+    Parameters
+    ----------
+    patterns : List[BaseModel]
+        list of pydantic models (records) of the patterns to be stored
+
+    dataname : str
+        prefix of the stored filename (current millis will be used as the second part of the filename to make filename unique)
+
+    ticker : str
+        ticker that the data belongs to, will be used in filename
+    """
+    # generate file name
+    millis = round(time.time() * 1000)
+    filepath = f"data/{ticker}_{dataname}_{millis}.csv"
+
+    # convert to dict
+    patterns = [pattern.dict() for pattern in patterns]
+    keys = patterns[0].keys()
+
+    with open(filepath, 'w', newline='') as output_file:
+        dict_writer = csv.DictWriter(output_file, keys)
+        dict_writer.writeheader()
+        dict_writer.writerows(patterns)
