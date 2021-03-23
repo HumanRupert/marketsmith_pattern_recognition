@@ -17,9 +17,9 @@ class AuthSession:
         Notes
         -------
         Uses the following environment variables for authentication:
-        USERNAME
-        PASSWORD
-        API_KEY
+        - USERNAME
+        - PASSWORD
+        - API_KEY
 
         Returns
         -------
@@ -38,11 +38,12 @@ class AuthSession:
         # make auth payload accessible to class consumers
         self.payload = payload
 
+        # make a request to GET_LOGIN endpoint to get login info
         login = session.post(GET_LOGIN, data=payload.__dict__).json()
         login["action"] = "login"
         login_json = json.dumps(login)
 
-        # get aspxauth cookies
+        # pass the login info to HANDLE_LOGIN endpoint to get .ASPXAUTH cookies
         session.post(HANDLE_LOGIN, data=login_json)
 
         session.headers.update({'Content-Type': 'application/json'})

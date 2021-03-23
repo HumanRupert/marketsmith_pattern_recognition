@@ -5,7 +5,7 @@ import backtrader as bt
 from backtrader.utils import num2date
 import pandas as pd
 
-from src.ms import extract_patterns, filter_cup_with_handles, convert_msdate_to_date
+from src.ms import extract_patterns, filter_cup_with_handles
 from src.constants import TICKER
 from src.models import CupWithHandle
 
@@ -19,15 +19,15 @@ class CupWithHandleStrategy(bt.Strategy):
             TICKER, filter_cup_with_handles, start, end)
         return cup_with_handles
 
-    def get_price_at_pivot_price(self, pattern):
-        pivot_date = convert_msdate_to_date(pattern["pivotPriceDate"])
+    def get_price_at_pivot_price(self, pattern: CupWithHandle):
+        pivot_date = pattern.pivotPriceDate
         date_row = self.df.loc[pivot_date]
         return date_row["Close"]
 
     def get_recent_pattern(self):
         date = self.dt.date(0)
         for pattern in self.patterns:
-            handle_end = convert_msdate_to_date(pattern["handleLowDate"])
+            handle_end = pattern.handleLowDate
             difference = (date - handle_end).days
             if(difference > 0 and difference < 28):
                 return pattern
@@ -78,8 +78,7 @@ class CupWithHandleStrategy(bt.Strategy):
 
         # or if 28 days has been passed since handle end
         current_date = date = self.dt.date(0)
-        handle_end = convert_msdate_to_date(
-            self.ongoing_pattern["handleLowDate"])
+        handle_end = self.ongoing_pattern.handleLowDate
         difference = (current_date - handle_end).days
         if(difference >= 28):
             self.close()

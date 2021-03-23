@@ -9,6 +9,25 @@ from src.models import Instrument
 
 @validate_arguments(config=dict(arbitrary_types_allowed=True))
 def get_instrument(session: AuthSession, symbol: str):
+    """Given a symbol (ticker), gets the corresponding Instrument from MarketSmith API
+
+    Parameters
+    ----------
+    session : AuthSession
+        authenticated session
+
+    symbol : str
+        ticker of Instrument
+
+    Raises
+    ----------
+    AssertionError
+        if the length of search results for the ticker is more than one
+
+    Returns
+    -------
+    Instrument
+    """
     # search in instruments
     data = f"\"{symbol}\""
     search_results = session.session.post(
