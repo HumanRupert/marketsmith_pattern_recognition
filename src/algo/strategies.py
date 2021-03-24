@@ -5,19 +5,19 @@ import backtrader as bt
 from backtrader.utils import num2date
 import pandas as pd
 
-from src.ms import extract_patterns, filter_cup_with_handles
 from src.constants import TICKER
 from src.models import CupWithHandle
 
 
 class CupWithHandleStrategy(bt.Strategy):
-    @staticmethod
-    def extract_cup_with_handles() -> List[CupWithHandle]:
-        start = datetime.datetime(1999, 3, 10).timestamp() * 1000
-        end = datetime.datetime(2021, 3, 3).timestamp() * 1000
-        cup_with_handles = extract_patterns(
-            TICKER, filter_cup_with_handles, start, end)
-        return cup_with_handles
+    def __init__(self, cup_with_handles):
+        self.df = pd.read_csv(f"data/{TICKER}.csv", index_col="Date")
+        self.df.index = pd.to_datetime(self.df.index).date
+
+        self.dt = self.datas[0].datetime
+        self.patterns = cup_with_handles
+
+        print(f"received {len(patterns)} patterns...")
 
     def get_price_at_pivot_price(self, pattern: CupWithHandle):
         pivot_date = pattern.pivotPriceDate
@@ -34,13 +34,6 @@ class CupWithHandleStrategy(bt.Strategy):
 
     def log(self, txt):
         print('%s, %s' % (self.dt.date(0), txt))
-
-    def __init__(self):
-        self.df = pd.read_csv(f"data/{TICKER}.csv", index_col="Date")
-        self.df.index = pd.to_datetime(self.df.index).date
-
-        self.dt = self.datas[0].datetime
-        self.patterns = self.extract_cup_with_handles()
 
     def on_no_position(self):
         # get most recent pattern
