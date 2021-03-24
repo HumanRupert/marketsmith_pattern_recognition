@@ -2,7 +2,6 @@ from typing import Literal, List, Optional
 from datetime import date
 
 from pydantic import BaseModel, validator
-from src.ms.utils import convert_msdate_to_date
 
 PatternType = Literal["consolidations",
                       "cupWithHandles", "doubleBottoms", "flatBases", "ascendingBases", "IPOs", "tightAreas"]
@@ -45,4 +44,5 @@ class CupWithHandle(BaseModel):
 
     @validator("baseStartDate", "baseEndDate", "pivotPriceDate", "leftSideHighDate", "baseBottomDate", "firstBottomDate", "handleLowDate", "handleStartDate", "cupEndDate", pre=True, always=True)
     def validate_date(cls, v):
+        from src.ms.utils import convert_msdate_to_date
         return convert_msdate_to_date(v)
