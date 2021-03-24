@@ -13,20 +13,17 @@ def convert_msdate_to_date(ms_date):
     -------
     date
     """
-    str_btwn_paranthesis = ms_date[ms_date.find("(")+1:ms_date.find(")")]
-
-    if(str_btwn_paranthesis[0] == "-"):
-        millis = int(str_btwn_paranthesis.split("-")[1]) * -1
-    else:
-        millis = int(str_btwn_paranthesis.split("-")[0])
-
-    date_obj = date.fromtimestamp(millis/1000)
-    return date_obj
-
-
-def validate_n_parse_msdate(msdate):
     try:
-        return convert_msdate_to_date(msdate)
+        str_btwn_paranthesis = ms_date[ms_date.find("(")+1:ms_date.find(")")]
+
+        if(str_btwn_paranthesis[0] == "-"):
+            millis = int(str_btwn_paranthesis.split("-")[1]) * -1
+        else:
+            millis = int(str_btwn_paranthesis.split("-")[0])
+
+        date_obj = date.fromtimestamp(millis/1000)
+        return date_obj
+
     except TypeError:
         raise ValueError(
             "Invalid date received from MS. Must be like /Date(1536303600000-0700)/")

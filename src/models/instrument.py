@@ -2,7 +2,7 @@ from datetime import date
 
 from pydantic import BaseModel, validator
 
-from src.ms.utils import validate_n_parse_msdate
+from src.ms.utils import convert_msdate_to_date
 
 
 class Instrument(BaseModel):
@@ -20,4 +20,4 @@ class Instrument(BaseModel):
 
     @validator("earliestTradingDate", "latestTradingDate", pre=True, always=True)
     def validate_date(cls, v):
-        return validate_n_parse_msdate(v)
+        return convert_msdate_to_date(v)
