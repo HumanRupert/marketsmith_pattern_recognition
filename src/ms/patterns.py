@@ -105,7 +105,7 @@ def filter_cup_with_handles(patterns) -> List[CupWithHandle]:
 
 
 def store_patterns(patterns: List[BaseModel], dataname: str, ticker: str):
-    """Stores a given list of patterns to a `.csv` file in `data/` dir
+    """Stores a given list of patterns to a `.csv` file in `data/patterns/` dir
 
     Parameters
     ----------
@@ -120,7 +120,7 @@ def store_patterns(patterns: List[BaseModel], dataname: str, ticker: str):
     """
     # generate file name
     millis = round(time.time() * 1000)
-    filepath = f"data/{ticker}_{dataname}_{millis}.csv"
+    filepath = f"data/patterns/{ticker}_{dataname}_{millis}.csv"
 
     # convert to dict
     patterns = [pattern.dict() for pattern in patterns]

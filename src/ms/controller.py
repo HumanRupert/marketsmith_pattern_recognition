@@ -2,7 +2,9 @@ from datetime import datetime
 
 import src.ms as ms
 from src.constants import TICKER, DATE_FORMAT
-from src.ms.utils import convert_defdate_to_timestamp
+from src.ms.utils import convert_defdate_to_timestamp, convert_csv_to_records
+from src.models import Constituent
+from src.ms.patterns import filter_cup_with_handles
 
 
 def extract_patterns(ticker: str, filter_method: callable, start: int, end: int, session=ms.AuthSession()):
@@ -48,11 +50,11 @@ def extract_n_store_patterns(ticker: str, filter_method: callable, start: str, e
     filter_method : `callable`
         method that filters target patterns from `GET_PATTERNS` endpoint response
 
-    start : `int`
-        start date in millis
+    start : `str`
+        start date in `DATE_FORMAT`
 
     end : `int`
-        end date in millis
+        end date in `DATE_FORMAT`
 
     dataname : `str`
          name to use for storing t data
@@ -60,10 +62,22 @@ def extract_n_store_patterns(ticker: str, filter_method: callable, start: str, e
     session : `AuthSession`, optional
         authenticated session, by default ms.AuthSession()
     """
-    # convert datr strings to millis
+    # convert datw strings to millis
     start, end = convert_defdate_to_timestamp(
         start), convert_defdate_to_timestamp(end)
+
     # load and extract patterns
     patterns = extract_patterns(ticker, filter_method, start, end)
+
     # n' store them
     ms.store_patterns(patterns, dataname, ticker)
+
+
+def extract_n_store_djia_cup_with_handles():
+    # read DJIA constituents
+    tickers = convert_csv_to_records("data/tickers.csv", Constituent)
+
+    # extract and store patterns for tickers
+    for ticker in tickers:
+        extract_n_store_patterns(
+            ticker=ticker.symbol, filter_method=filter_cup_with_handles, start="2000-01-01", end="2020-04-01", dataname="cup_with_handles")
