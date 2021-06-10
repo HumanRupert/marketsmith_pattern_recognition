@@ -1,1 +1,1 @@
-from .djia import load_djia_constituents
+from .ticker import load_tickers
