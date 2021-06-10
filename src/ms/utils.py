@@ -8,17 +8,22 @@ from pydantic import BaseModel
 from src.constants import DATE_FORMAT
 
 
-def convert_msdate_to_date(ms_date):
+def convert_msdate_to_date(ms_date: str) -> date:
     """Converts date string passed by MarketSmith API to `date` object
 
     Parameters
     ----------
-    ms_date : str
+    ms_date : `str`
         e.g., "/Date(1536303600000-0700)/"
 
     Returns
     -------
-    date
+    `date`
+
+    Raises
+    -------
+    `ValueError`
+        Invalid input type
     """
     try:
         str_btwn_paranthesis = ms_date[ms_date.find("(")+1:ms_date.find(")")]

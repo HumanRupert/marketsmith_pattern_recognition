@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class User(BaseModel):
-    """Represents a MarketSmith user object"""
+    """Represents a MarketSmith `User` object"""
     CSUserID: int
     DisplayName: str
     EmailAddress: str

@@ -4,7 +4,7 @@ from pydantic import BaseModel, validator
 
 
 class Instrument(BaseModel):
-    """Represents a financial instrument object passed by MarketSmith API"""
+    """Represents a financial `Instrument` object passed by MarketSmith API"""
     mSID: int
     type: int
     instrumentID: int
