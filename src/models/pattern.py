@@ -3,9 +3,6 @@ from datetime import date
 
 from pydantic import BaseModel, validator
 
-PatternType = Literal["consolidations",
-                      "cupWithHandles", "doubleBottoms", "flatBases", "ascendingBases", "IPOs", "tightAreas"]
-
 
 class CupWithHandle(BaseModel):
     """Represents a cup with handle pattern object passed by MarketSmith API"""
@@ -21,7 +18,6 @@ class CupWithHandle(BaseModel):
     versionID: str
     leftSideHighDate: date
     patternType: int
-    baseBottomDate: date
     firstBottomDate: date
     handleLowDate: date
     handleStartDate: date
@@ -42,7 +38,7 @@ class CupWithHandle(BaseModel):
     HandleLength: int
     CupLength: int
 
-    @validator("baseStartDate", "baseEndDate", "pivotPriceDate", "leftSideHighDate", "baseBottomDate", "firstBottomDate", "handleLowDate", "handleStartDate", "cupEndDate", pre=True, always=True)
+    @validator("baseStartDate", "baseEndDate", "pivotPriceDate", "leftSideHighDate", "firstBottomDate", "handleLowDate", "handleStartDate", "cupEndDate", pre=True, always=True)
     def validate_date(cls, v):
         from src.ms.utils import convert_msdate_to_date
         return convert_msdate_to_date(v)

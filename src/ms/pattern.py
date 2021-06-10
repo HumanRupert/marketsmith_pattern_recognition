@@ -1,12 +1,11 @@
 import json
 from typing import Literal, List
 import csv
-import time
 
 from pydantic import validate_arguments, BaseModel
 
 from src.ms import AuthSession, get_instrument, get_user
-from src.models import Instrument, User, PatternType, CupWithHandle
+from src.models import Instrument, User, CupWithHandle
 from src.ms.endpoints import GET_PATTERNS
 
 
@@ -16,25 +15,24 @@ def get_patterns(instrument: Instrument, user: User, session: AuthSession, start
 
     Parameters
     ----------
-    instrument : Instrument
+    instrument : `Instrument`
         Instrument object of the target name
 
-    user : User
+    user : `User`
         Authenticated user
 
-    session : AuthSession
+    session : `AuthSession`
         Authenticated session
 
-    start : int
+    start : `int`
         Start in millis
 
-    end : int
+    end : `int`
         End in millis
 
     Returns
     -------
-    dict
-        status of the response and the available patterns
+    `dict`
     """
     start_date = f"/Date({start})/"
     end_date = f"/Date({end})/"
@@ -45,10 +43,12 @@ def get_patterns(instrument: Instrument, user: User, session: AuthSession, start
         "instrumentType": instrument.type,
         "dateInfo": {
             "startDate": start_date,
-            "endDate": end_date
+            "endDate": end_date,
+            "frequency": 1,
+            "tickCount": 0
         }
     }
-    res = session.session.post(GET_PATTERNS, data=json.dumps(payload))
+    res = session.session.post(GET_PATTERNS, json=payload)
     res = res.json()
     return res
 
@@ -58,12 +58,12 @@ def flattern_pattern_properties(patterns: List[dict]) -> List[dict]:
 
     Parameters
     ----------
-    patterns : List[dict]
+    patterns : `List[dict]`
         list of patterns fetched from MS
 
     Returns
     -------
-    List[dict]
+    `List[dict]`
         flattened patterns
     """
     # add properties field as separate keys
@@ -81,7 +81,7 @@ def filter_cup_with_handles(patterns) -> List[CupWithHandle]:
 
     Parameters
     ----------
-    patterns : object
+    patterns : `object`
         response of `GET_PATTERNS` endpoint
 
     Returns
@@ -104,29 +104,29 @@ def filter_cup_with_handles(patterns) -> List[CupWithHandle]:
     return cup_with_handles
 
 
-def store_patterns(patterns: List[BaseModel], dataname: str, ticker: str):
-    """Stores a given list of patterns to a `.csv` file in `data/patterns/` dir
+def store_patterns(patterns: List[BaseModel], ticker: str):
+    """Stores a given list of patterns to `data/patterns.csv`
 
     Parameters
     ----------
-    patterns : List[BaseModel]
+    patterns : `List[BaseModel]`
         list of pydantic models (records) of the patterns to be stored
 
-    dataname : str
-        prefix of the stored filename (current millis will be used as the second part of the filename to make filename unique)
-
-    ticker : str
-        ticker that the data belongs to, will be used in filename
+    ticker : `str`
+        ticker that the data belongs to
     """
-    # generate file name
-    millis = round(time.time() * 1000)
-    filepath = f"data/patterns/{ticker}_{dataname}_{millis}.csv"
+    filepath = "data/patterns.csv"
 
     # convert to dict
-    patterns = [pattern.dict() for pattern in patterns]
+    patterns = [{**pattern.dict(), "symbol": ticker}for pattern in patterns]
     keys = patterns[0].keys()
 
-    with open(filepath, 'w', newline='') as output_file:
-        dict_writer = csv.DictWriter(output_file, keys)
-        dict_writer.writeheader()
+    # check if is empty
+    with open(filepath, "r") as patterns_file:
+        csv_dict = [row for row in csv.DictReader(patterns_file)]
+        is_empty = len(csv_dict) == 0
+
+    with open(filepath, 'a') as patterns_file:
+        dict_writer = csv.DictWriter(patterns_file, keys)
+        is_empty and dict_writer.writeheader()
         dict_writer.writerows(patterns)
