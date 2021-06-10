@@ -10,7 +10,7 @@ from src.ms.pattern import filter_cup_with_handles
 logging.basicConfig(level=logging.INFO)
 
 
-def extract_patterns(ticker: str, filter_method: callable, start: int, end: int, session=ms.AuthSession()):
+def extract_patterns(ticker: str, filter_method: callable, start: int, end: int, session=ms.AuthSession()) -> list:
     """Extracts a set of patterns, given a filter method, from MarketSmith API
 
     Parameters
@@ -42,7 +42,7 @@ def extract_patterns(ticker: str, filter_method: callable, start: int, end: int,
     return filtered_patterns
 
 
-def extract_n_store_patterns(ticker: str, filter_method: callable, start: int, end: int,  dataname: str, session=ms.AuthSession()):
+def extract_n_store_patterns(ticker: str, filter_method: callable, start: int, end: int,  dataname: str, session=ms.AuthSession()) -> None:
     """Extracts patterns from MS API and stores them in `data/` dir
 
     Parameters
@@ -72,7 +72,7 @@ def extract_n_store_patterns(ticker: str, filter_method: callable, start: int, e
     ms.store_patterns(patterns, dataname, ticker)
 
 
-def extract_n_store_cup_with_handles(start: int, end: int, tickers: List[Constituent]):
+def extract_n_store_cup_with_handles(start: int, end: int, tickers: List[Constituent]) -> None:
     """Loads tickers from `data/tickers.csv`, calls `extract_patterns` for each ticker to load Cup With Handle patterns, and then stores them in `data/patterns/ as CSV files
 
     Parameters

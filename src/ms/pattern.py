@@ -10,7 +10,7 @@ from src.ms.endpoints import GET_PATTERNS
 
 
 @validate_arguments(config=dict(arbitrary_types_allowed=True))
-def get_patterns(instrument: Instrument, user: User, session: AuthSession, start: int, end: int):
+def get_patterns(instrument: Instrument, user: User, session: AuthSession, start: int, end: int) -> dict:
     """Gets all patterns for an instrument in a given period
 
     Parameters
@@ -104,7 +104,7 @@ def filter_cup_with_handles(patterns) -> List[CupWithHandle]:
     return cup_with_handles
 
 
-def store_patterns(patterns: List[BaseModel], ticker: str):
+def store_patterns(patterns: List[BaseModel], ticker: str) -> None:
     """Stores a given list of patterns to `data/patterns.csv`
 
     Parameters

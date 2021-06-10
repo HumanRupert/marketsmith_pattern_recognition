@@ -8,7 +8,7 @@ from src.models import Instrument
 
 
 @validate_arguments(config=dict(arbitrary_types_allowed=True))
-def get_instrument(session: AuthSession, symbol: str):
+def get_instrument(session: AuthSession, symbol: str) -> Instrument:
     """Given a symbol (ticker), gets the corresponding `Instrument` from MarketSmith API
 
     Parameters

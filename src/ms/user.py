@@ -6,7 +6,7 @@ from src.models import User
 
 
 @validate_arguments(config=dict(arbitrary_types_allowed=True))
-def get_user(session: AuthSession):
+def get_user(session: AuthSession) -> User:
     """Gets information of the authenticated user in a session"""
     response = session.session.get(GET_USER_INFO)
     user = User(**response.json())
