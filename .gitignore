@@ -4,4 +4,4 @@ env
 todo.md
 __pycache__
 data/
-creds.json
+results.csv
