@@ -5,8 +5,6 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.constants import DATE_FORMAT
-
 
 def convert_msdate_to_date(ms_date: str) -> date:
     """Converts date string passed by MarketSmith API to `date` object
