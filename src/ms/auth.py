@@ -10,29 +10,20 @@ load_dotenv()
 
 
 class AuthSession:
-    def __init__(self):
-        """Generates a session authenticated into MarketSmith
-
-        Notes
-        -------
-        Uses the following environment variables for authentication:
-        - USERNAME
-        - PASSWORD
-        - API_KEY
-
-        Returns
-        -------
-        Session
-            An authenticated requests session.
-
-        """
+    def __init__(self,
+                 username: str = os.environ["USERNAME"],
+                 password: str = os.environ["PASSWORD"],
+                 api_key: str = os.environ["API_KEY"],
+                 include: str = "profile,data,"
+                 ):
+        """Generates a session authenticated into MarketSmith"""
         session = Session()
 
         payload = {
-            "loginID": os.environ["USERNAME"],
-            "password": os.environ["PASSWORD"],
-            "ApiKey": os.environ["API_KEY"],
-            "include": "profile,data,",
+            "loginID": username,
+            "password": password,
+            "ApiKey": api_key,
+            "include": include,
             "includeUserInfo": "true"
         }
 

@@ -21,7 +21,7 @@ def load_tickers(endpoint: str, api_key: str = os.environ["FMP_API_KEY"]) -> Non
     # parse and validate data
     tickers = parse_obj_as(List[Constituent], res)
 
-    # load data
+    # write data to file
     tickers = [constituent.dict() for constituent in tickers]
     keys = tickers[0].keys()
     with open("data/tickers.csv", 'w', newline='') as output_file:
