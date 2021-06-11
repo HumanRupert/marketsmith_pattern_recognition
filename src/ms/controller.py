@@ -43,7 +43,7 @@ def extract_patterns(ticker: str, filter_method: callable, start: int, end: int,
 
 
 def extract_n_store_cup_with_handles(start: int, end: int, tickers: List[Constituent]) -> None:
-    """Loads tickers from `data/tickers.csv`, calls `extract_patterns` for each ticker to load Cup With Handle patterns, and then stores them in `data/patterns/ as CSV files
+    """Loads tickers from `data/tickers.csv`, calls `extract_patterns` for each ticker to load Cup With Handle patterns, and then stores them in `data/patterns.csv
 
     Parameters
     ----------
