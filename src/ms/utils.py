@@ -41,42 +41,6 @@ def convert_msdate_to_date(ms_date: str) -> date:
             "Invalid date received from MS. Must be like /Date(1536303600000-0700)/")
 
 
-def convert_defdate_to_datetime(default_date: str) -> datetime:
-    """Converts a date string w/ default format defined in `constants.DATE_FORMAT` to a `datetime` object
-
-    Parameters
-    ----------
-    default_date : `str`
-        default date string
-
-    Returns
-    -------
-    `datetime`
-    """
-    try:
-        return datetime.strptime(default_date, DATE_FORMAT)
-    except (ValueError, TypeError) as e:
-        logging.error(
-            "Invalid datetime format passed to convert_defdate_to_date.")
-        raise
-
-
-def convert_defdate_to_timestamp(default_date: str) -> int:
-    """Converts a date string w/ default format defined in `constants.DATE_FORMAT` to a timestamp
-
-    Parameters
-    ----------
-    default_date : `str`
-        default date string
-
-    Returns
-    -------
-    `int`
-    """
-    datetime_obj = convert_defdate_to_datetime(default_date)
-    return datetime_obj.timestamp() * 1000
-
-
 def convert_csv_to_records(filepath: str, klass: BaseModel) -> List[BaseModel]:
     """Converts a CSV file to a list of models
 
