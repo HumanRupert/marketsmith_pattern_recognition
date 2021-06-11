@@ -42,36 +42,6 @@ def extract_patterns(ticker: str, filter_method: callable, start: int, end: int,
     return filtered_patterns
 
 
-def extract_n_store_patterns(ticker: str, filter_method: callable, start: int, end: int,  dataname: str, session=ms.AuthSession()) -> None:
-    """Extracts patterns from MS API and stores them in `data/` dir
-
-    Parameters
-    ----------
-    ticker : `str`
-        symbol of Instrument to get the data for
-
-    filter_method : `callable`
-        method that filters target patterns from `GET_PATTERNS` endpoint response
-
-    start : `int`
-        start date in millis
-
-    end : `int`
-        end date in millis
-
-    dataname : `str`
-         name to use for storing data
-
-    session : `AuthSession`, optional
-        authenticated session, by default `ms.AuthSession()`
-    """
-    # load and extract patterns
-    patterns = extract_patterns(ticker, filter_method, start, end)
-
-    # n' store them
-    ms.store_patterns(patterns, dataname, ticker)
-
-
 def extract_n_store_cup_with_handles(start: int, end: int, tickers: List[Constituent]) -> None:
     """Loads tickers from `data/tickers.csv`, calls `extract_patterns` for each ticker to load Cup With Handle patterns, and then stores them in `data/patterns/ as CSV files
 
@@ -96,4 +66,6 @@ def extract_n_store_cup_with_handles(start: int, end: int, tickers: List[Constit
 if __name__ == "__main__":
     tickers: List[Constituent] = convert_csv_to_records(
         "data/tickers.csv", Constituent)
-    extract_n_store_cup_with_handles(1304411415000, 1619739000000, tickers)
+    start = datetime.timestamp(datetime(2018, 1, 1)) * 1000
+    end = datetime.timestamp(datetime(2020, 1, 1)) * 1000
+    extract_n_store_cup_with_handles(start, end, tickers)
