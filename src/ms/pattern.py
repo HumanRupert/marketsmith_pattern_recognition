@@ -10,7 +10,7 @@ from src.ms.endpoints import GET_PATTERNS
 
 
 @validate_arguments(config=dict(arbitrary_types_allowed=True))
-def get_patterns(instrument: Instrument, user: User, session: AuthSession, start: int, end: int) -> dict:
+def get_patterns(instrument: Instrument, user: User, session: AuthSession, start: int, end: int, frequency: int = 1) -> dict:
     """Gets all patterns for an instrument in a given period
 
     Parameters
@@ -30,6 +30,10 @@ def get_patterns(instrument: Instrument, user: User, session: AuthSession, start
     end : `int`
         End in millis
 
+    frequency : `int`
+        1 for daily chart patterns
+        2 for weekly chart patterns
+
     Returns
     -------
     `dict`
@@ -44,7 +48,7 @@ def get_patterns(instrument: Instrument, user: User, session: AuthSession, start
         "dateInfo": {
             "startDate": start_date,
             "endDate": end_date,
-            "frequency": 1,
+            "frequency": frequency,
             "tickCount": 0
         }
     }
